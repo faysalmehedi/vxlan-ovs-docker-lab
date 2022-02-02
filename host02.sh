@@ -22,8 +22,8 @@ sudo ip address add 192.168.2.1/24 dev veth1
 ip a
 
 # up the interfaces and check status
-sudo ip link set dev veth0 up mtu 1450
-sudo ip link set dev veth1 up mtu 1450
+sudo ip link set dev veth0 up
+sudo ip link set dev veth1 up
 ip a
 
 # Step-02
@@ -32,24 +32,24 @@ ip a
 sudo docker build . -t ubuntu-docker
 
 # create containers from the created image; Containers not connected to any network
-sudo docker run -d --net=none --name docker1 ubuntu-docker
-sudo docker run -d --net=none --name docker2 ubuntu-docker
+sudo docker run -d --net=none --name docker3 ubuntu-docker
+sudo docker run -d --net=none --name docker4 ubuntu-docker
 
 # check container status and ip 
 sudo docker ps
-sudo docker exec docker1 ip a
-sudo docker exec docker2 ip a
+sudo docker exec docker3 ip a
+sudo docker exec docker4 ip a
 
 # add ip address to the container using ovs-docker utility 
-sudo ovs-docker add-port ovs-br0 eth0 docker1 --ipaddress=192.168.1.11/24 --gateway=192.168.1.1
-sudo docker exec docker1 ip a
+sudo ovs-docker add-port ovs-br0 eth0 docker3 --ipaddress=192.168.1.11/24 --gateway=192.168.1.1
+sudo docker exec docker3 ip a
 
-sudo ovs-docker add-port ovs-br1 eth0 docker2 --ipaddress=192.168.2.11/24 --gateway=192.168.2.1
-sudo docker exec docker2 ip a
+sudo ovs-docker add-port ovs-br1 eth0 docker4 --ipaddress=192.168.2.11/24 --gateway=192.168.2.1
+sudo docker exec docker4 ip a
 
 # ping the gateway to check if container connected to ovs-bridges
-sudo docker exec docker1 ping 192.168.1.1
-sudo docker exec docker2 ping 192.168.2.1
+sudo docker exec docker3 ping 192.168.1.1
+sudo docker exec docker4 ping 192.168.2.1
 
 
 # Step-03
@@ -73,21 +73,21 @@ ip a
 
 # FROM docker1
 # will get ping 
-sudo docker exec docker1 ping 192.168.1.12
-sudo docker exec docker1 ping 192.168.1.11
+sudo docker exec docker3 ping 192.168.1.12
+sudo docker exec docker3 ping 192.168.1.11
 
 # will be failed
-sudo docker exec docker1 ping 192.168.2.11
-sudo docker exec docker1 ping 192.168.2.12
+sudo docker exec docker3 ping 192.168.2.11
+sudo docker exec docker3 ping 192.168.2.12
 
 # FROM docker2
 # will get ping 
-sudo docker exec docker2 ping 192.168.2.11
-sudo docker exec docker2 ping 192.168.2.12
+sudo docker exec docker4 ping 192.168.2.11
+sudo docker exec docker4 ping 192.168.2.12
 
 # will be failed
-sudo docker exec docker2 ping 192.168.1.11
-sudo docker exec docker2 ping 192.168.1.12
+sudo docker exec docker4 ping 192.168.1.11
+sudo docker exec docker4 ping 192.168.1.12
 
 
 # NAT Conncetivity for recahing the internet
@@ -104,3 +104,7 @@ sudo iptables -t nat -L -n -v
 sudo iptables --append FORWARD --in-interface veth0 --jump ACCEPT
 sudo iptables --append FORWARD --out-interface veth0 --jump ACCEPT
 sudo iptables --table nat --append POSTROUTING --source 192.168.1.0/24 --jump MASQUERADE
+
+sudo iptables --append FORWARD --in-interface veth1 --jump ACCEPT
+sudo iptables --append FORWARD --out-interface veth1 --jump ACCEPT
+sudo iptables --table nat --append POSTROUTING --source 192.168.2.0/24 --jump MASQUERADE
