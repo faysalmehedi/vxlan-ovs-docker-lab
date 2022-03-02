@@ -100,8 +100,7 @@ sudo ip link set dev veth1 up mtu 1450
 # Check the status, link should be UP/UNKNOWN 
 ip a
 ```
-**
-Step 2: It's time to set docker container with None network. Also as container will not get any internet connection for now, we will need some tools to analysis so I have wriiten a Dockerfile for this. Build the image first then run the container.**
+**Step 2: It's time to set docker container with None network. Also as container will not get any internet connection for now, we will need some tools to analysis so I have wriiten a Dockerfile for this. Build the image first then run the container.**
 
 ```bash
 # For VM1
@@ -230,7 +229,7 @@ sudo docker exec docker2 ping 192.168.1.12
 
 **Step 4: But we can communicate between containers with same VNI, but can't reach the outer world. Let's fix that by adding some iptables rules for NATing.**
 
-_Note: Not going to describe all the commands here cause it's not our main focus. Go to this [link](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/security_guide/s1-firewall-ipt-fwd) for details: _
+_Note: Not going to describe all the commands here cause it's not our main focus. Go to this [link](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/4/html/security_guide/s1-firewall-ipt-fwd) for details:_
 
 ```bash
 # NAT Conncetivity for recahing the internet
