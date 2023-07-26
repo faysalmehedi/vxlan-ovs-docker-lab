@@ -41,10 +41,10 @@ sudo docker exec docker3 ip a
 sudo docker exec docker4 ip a
 
 # add ip address to the container using ovs-docker utility 
-sudo ovs-docker add-port ovs-br0 eth0 docker3 --ipaddress=192.168.1.11/24 --gateway=192.168.1.1
+sudo ovs-docker add-port ovs-br0 eth0 docker3 --ipaddress=192.168.1.12/24 --gateway=192.168.1.1
 sudo docker exec docker3 ip a
 
-sudo ovs-docker add-port ovs-br1 eth0 docker4 --ipaddress=192.168.2.11/24 --gateway=192.168.2.1
+sudo ovs-docker add-port ovs-br1 eth0 docker4 --ipaddress=192.168.2.12/24 --gateway=192.168.2.1
 sudo docker exec docker4 ip a
 
 # ping the gateway to check if container connected to ovs-bridges
